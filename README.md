@@ -6,7 +6,7 @@ Instead of naming marks, press one key to add the current copy-mode location to 
 
 - `M-p` jumps to the closest earlier mark.
 - Repeating `M-p` walks toward older marks.
-- `M-n` jumps to the closest later mark.
+- `M-n` jumps to the closest later mark, then exits copy mode after the newest mark.
 - Repeating `M-n` walks toward newer marks.
 - Manually scroll anywhere, then use `M-p` or `M-n`; navigation resumes from that location.
 
@@ -27,13 +27,14 @@ Reload tmux and press `prefix + I` to install the plugin.
 
 ## Default bindings
 
-Bindings are active in both `copy-mode` and `copy-mode-vi`.
+Bindings are active in both `copy-mode` and `copy-mode-vi`. The previous-mark
+binding also works from normal mode and enters copy mode automatically.
 
 | Key | Action |
 | --- | --- |
 | `m` | Add the current location to the mark list |
-| `M-p` | Jump to the closest earlier mark |
-| `M-n` | Jump to the closest later mark |
+| `M-p` | Enter copy mode if needed, then jump to the closest earlier mark |
+| `M-n` | Jump to the closest later mark, or exit copy mode after the newest mark |
 | `M-c` | Clear all marks in the current pane |
 
 Enter copy mode first, normally with `prefix + [`.

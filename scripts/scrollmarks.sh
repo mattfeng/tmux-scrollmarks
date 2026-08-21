@@ -24,6 +24,14 @@ require_copy_mode() {
     fi
 }
 
+enter_copy_mode() {
+    local in_mode
+    in_mode="$(tmux display-message -p -t "$PANE" -F '#{pane_in_mode}')"
+    if [[ "$in_mode" != '1' ]]; then
+        tmux copy-mode -t "$PANE"
+    fi
+}
+
 # Return the copy-mode cursor's physical grid row, counted from the oldest
 # retained history row. Existing rows keep the same number as new output is
 # appended, until tmux evicts old history or reflows lines after a resize.
@@ -154,7 +162,11 @@ jump_to() {
 
 jump_mark() {
     local direction="$1"
-    require_copy_mode
+    if [[ "$direction" == 'prev' ]]; then
+        enter_copy_mode
+    else
+        require_copy_mode
+    fi
 
     local current target index
     current="$(current_position)"
@@ -178,7 +190,7 @@ jump_mark() {
         next)
             target="$(find_next "$current")"
             if [[ -z "$target" ]]; then
-                message 'no later mark'
+                tmux send-keys -t "$PANE" -X cancel
                 return
             fi
             ;;

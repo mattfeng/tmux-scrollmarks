@@ -23,6 +23,11 @@ prev_key="$(get_tmux_option '@scrollmarks-prev-key' 'M-p')"
 next_key="$(get_tmux_option '@scrollmarks-next-key' 'M-n')"
 clear_key="$(get_tmux_option '@scrollmarks-clear-key' 'M-c')"
 
+# Previous also works outside copy mode: the script enters copy mode before
+# jumping to the closest earlier mark.
+tmux bind-key -T root "$prev_key" \
+    run-shell -b "\"$SCRIPT\" prev \"#{pane_id}\""
+
 for table in copy-mode copy-mode-vi; do
     tmux bind-key -T "$table" "$add_key" \
         run-shell -b "\"$SCRIPT\" add \"#{pane_id}\""
