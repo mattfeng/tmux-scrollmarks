@@ -70,7 +70,15 @@ sort_unique_marks() {
         return
     fi
 
-    mapfile -t MARKS < <(printf '%s\n' "${MARKS[@]}" | sort -n -u)
+    # macOS still ships Bash 3.2, which does not provide mapfile/readarray.
+    # Read from a process substitution so the loop runs in this shell and can
+    # update MARKS (a pipeline would run it in a subshell on Bash 3.2).
+    local sorted=()
+    local mark
+    while IFS= read -r mark; do
+        sorted+=("$mark")
+    done < <(printf '%s\n' "${MARKS[@]}" | sort -n -u)
+    MARKS=("${sorted[@]}")
 }
 
 mark_index() {
